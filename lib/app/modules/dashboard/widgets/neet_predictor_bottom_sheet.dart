@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import '../../predictor/controllers/predictor_controller.dart';
 import '../../../theme/app_colors.dart';
-import '../../../../core/global_widgets/app_loader.dart';
 
 class NeetPredictorBottomSheet extends StatelessWidget {
   const NeetPredictorBottomSheet({super.key});
@@ -20,7 +18,7 @@ class NeetPredictorBottomSheet extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.88,
+        maxHeight: MediaQuery.of(context).size.height * 0.90,
       ),
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurface : Colors.white,
@@ -28,19 +26,16 @@ class NeetPredictorBottomSheet extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Drag Handle Bar
           const SizedBox(height: 12),
           Container(
             height: 4,
-            width: 42,
+            width: 44,
             decoration: BoxDecoration(
               color: isDark ? Colors.white24 : Colors.black12,
               borderRadius: BorderRadius.circular(10),
             ),
           ),
           const SizedBox(height: 16),
-
-          // Modal Content Area
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.only(
@@ -51,32 +46,31 @@ class NeetPredictorBottomSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title Header with Brand Badge
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
-                          vertical: 4,
+                          vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.12),
+                          color: AppColors.primary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Row(
                           children: [
                             Icon(
                               Icons.auto_awesome_rounded,
-                              size: 13,
+                              size: 14,
                               color: AppColors.primary,
                             ),
-                            SizedBox(width: 5),
+                            SizedBox(width: 6),
                             Text(
                               "AI PREDICTOR ENGINE",
                               style: TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: 10,
+                                fontSize: 10.5,
                                 fontWeight: FontWeight.w800,
                                 color: AppColors.primary,
                                 letterSpacing: 0.8,
@@ -99,9 +93,7 @@ class NeetPredictorBottomSheet extends StatelessWidget {
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 12),
-
+                  const SizedBox(height: 14),
                   RichText(
                     text: TextSpan(
                       text: "Predict Your ",
@@ -123,60 +115,50 @@ class NeetPredictorBottomSheet extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 20),
 
-                  // Custom Sliding Radio Tabs
-                  _buildCustomRadioSelector(controller, isDark),
+                  // Minimal Segmented Pill Bar
+                  _buildSegmentedExamPicker(controller, isDark),
+                  const SizedBox(height: 18),
 
-                  const SizedBox(height: 20),
-
-                  // Full Name Field
+                  // Full Name
                   _buildInputField(
                     label: "Full Name",
-                    hint: "e.g. Rahul Sharma",
+                    hint: "Rahul Sharma",
                     icon: Icons.person_outline_rounded,
                     controller: controller.fullNameController,
                     isDark: isDark,
                   ),
+                  const SizedBox(height: 14),
 
-                  const SizedBox(height: 12),
-
-                  // Mobile & Email Row
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildInputField(
-                          label: "Mobile Number",
-                          hint: "9876543210",
-                          icon: Icons.phone_outlined,
-                          controller: controller.mobileController,
-                          isDark: isDark,
-                          keyboardType: TextInputType.phone,
-                          prefixText: "+91 ",
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(10),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _buildInputField(
-                          label: "Email Address",
-                          hint: "name@domain.com",
-                          icon: Icons.email_outlined,
-                          controller: controller.emailController,
-                          isDark: isDark,
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                      ),
+                  // Mobile Number (Dedicated Row)
+                  _buildInputField(
+                    label: "Mobile Number",
+                    hint: "9876543210",
+                    icon: Icons.phone_outlined,
+                    controller: controller.mobileController,
+                    isDark: isDark,
+                    keyboardType: TextInputType.phone,
+                    prefixText: "+91 ",
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(10),
                     ],
                   ),
+                  const SizedBox(height: 14),
 
-                  const SizedBox(height: 12),
+                  // Email Address (Dedicated Row)
+                  _buildInputField(
+                    label: "Email Address",
+                    hint: "name@domain.com",
+                    icon: Icons.email_outlined,
+                    controller: controller.emailController,
+                    isDark: isDark,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 14),
 
-                  // Year & State Selection Row
+                  // Target Year & State (Kept in 2-column layout)
                   Row(
                     children: [
                       Expanded(
@@ -189,7 +171,7 @@ class NeetPredictorBottomSheet extends StatelessWidget {
                           isDark: isDark,
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 12),
                       Expanded(
                         flex: 6,
                         child: _buildDropdownField(
@@ -203,112 +185,10 @@ class NeetPredictorBottomSheet extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
 
-                  const SizedBox(height: 20),
-
-                  // NEET Score Slider Section
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkCard
-                          : AppColors.lightBackground,
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(
-                        color: isDark
-                            ? AppColors.darkBorder
-                            : AppColors.lightBorder,
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Expected NEET Score",
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  "Out of 720 Marks",
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 11,
-                                    color: isDark
-                                        ? AppColors.darkTextSecondary
-                                        : AppColors.lightTextSecondary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Obx(
-                              () => Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.primary.withOpacity(0.3),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Text(
-                                  "${controller.scoreValue.value.toInt()}",
-                                  style: const TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Obx(
-                          () => SliderTheme(
-                            data: SliderTheme.of(context).copyWith(
-                              activeTrackColor: AppColors.primary,
-                              inactiveTrackColor: isDark
-                                  ? AppColors.darkBorder
-                                  : const Color(0xFFCBD5E1),
-                              thumbColor: Colors.white,
-                              thumbShape: const RoundSliderThumbShape(
-                                enabledThumbRadius: 10,
-                                elevation: 4,
-                              ),
-                              overlayColor: AppColors.primary.withOpacity(0.18),
-                              trackHeight: 6,
-                            ),
-                            child: Slider(
-                              value: controller.scoreValue.value,
-                              min: 0,
-                              max: 720,
-                              divisions: 720,
-                              onChanged: (val) =>
-                                  controller.setScoreFromSlider(val),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
+                  // Custom Direct Score Input & Interactive Sync Slider
+                  _buildScoreInputSection(controller, isDark),
                   const SizedBox(height: 24),
 
                   // Predict Action Button
@@ -360,18 +240,17 @@ class NeetPredictorBottomSheet extends StatelessWidget {
     );
   }
 
-  // Custom Animated Radio Capsule Selector
-  Widget _buildCustomRadioSelector(
+  Widget _buildSegmentedExamPicker(
     PredictorController controller,
     bool isDark,
   ) {
     return Obx(
       () => Container(
-        height: 48,
-        padding: const EdgeInsets.all(4),
+        height: 44,
+        padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(
           color: isDark ? AppColors.darkCard : const Color(0xFFF1F5F9),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
           ),
@@ -387,27 +266,27 @@ class NeetPredictorBottomSheet extends StatelessWidget {
                 },
                 behavior: HitTestBehavior.opaque,
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 240),
+                  duration: const Duration(milliseconds: 220),
                   curve: Curves.easeOutCubic,
                   decoration: BoxDecoration(
                     color: isSelected ? AppColors.primary : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(11),
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.32),
-                              blurRadius: 10,
-                              offset: const Offset(0, 3),
+                              color: AppColors.primary.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
                             ),
                           ]
                         : [],
                   ),
                   alignment: Alignment.center,
-                  child: AnimatedDefaultTextStyle(
-                    duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    type,
                     style: TextStyle(
                       fontFamily: 'Inter',
-                      fontSize: 13,
+                      fontSize: 12.5,
                       fontWeight: isSelected
                           ? FontWeight.w800
                           : FontWeight.w600,
@@ -417,7 +296,6 @@ class NeetPredictorBottomSheet extends StatelessWidget {
                                 ? AppColors.darkTextSecondary
                                 : AppColors.lightTextSecondary),
                     ),
-                    child: Text(type),
                   ),
                 ),
               ),
@@ -428,7 +306,102 @@ class NeetPredictorBottomSheet extends StatelessWidget {
     );
   }
 
-  // Structured Floating Label Input Box
+  Widget _buildScoreInputSection(PredictorController controller, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkCard : AppColors.lightBackground,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "NEET Score",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "Type score or drag slider",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 11,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              // Direct Custom Numeric TextField
+              Container(
+                width: 90,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkSurface : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primary, width: 1.5),
+                ),
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IntrinsicWidth(
+                      child: TextField(
+                        controller: controller.scoreController,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.primary,
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(3),
+                        ],
+                        onChanged: (val) => controller.setScoreFromText(val),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      "/720",
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.lightTextSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2.0),
+        ],
+      ),
+    );
+  }
+
   Widget _buildInputField({
     required String label,
     required String hint,
@@ -455,7 +428,7 @@ class NeetPredictorBottomSheet extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Container(
-          height: 50,
+          height: 52,
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkCard : Colors.white,
             borderRadius: BorderRadius.circular(14),
@@ -518,7 +491,6 @@ class NeetPredictorBottomSheet extends StatelessWidget {
     );
   }
 
-  // Structured Dropdown Selector Box
   Widget _buildDropdownField({
     required String label,
     required IconData icon,
@@ -544,7 +516,7 @@ class NeetPredictorBottomSheet extends StatelessWidget {
         const SizedBox(height: 6),
         Obx(
           () => Container(
-            height: 50,
+            height: 52,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkCard : Colors.white,
