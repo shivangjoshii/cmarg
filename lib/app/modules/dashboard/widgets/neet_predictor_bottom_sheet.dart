@@ -1,6 +1,7 @@
-import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import '../../predictor/controllers/predictor_controller.dart';
 import '../../../theme/app_colors.dart';
@@ -19,433 +20,593 @@ class NeetPredictorBottomSheet extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.90,
+        maxHeight: MediaQuery.of(context).size.height * 0.88,
       ),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF101726) : Colors.white,
+        color: isDark ? AppColors.darkSurface : Colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      padding: EdgeInsets.only(
-        top: 12,
-        left: 20,
-        right: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle Bar
-            Center(
-              child: Container(
-                height: 4,
-                width: 44,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.35),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+      child: Column(
+        children: [
+          // Drag Handle Bar
+          const SizedBox(height: 12),
+          Container(
+            height: 4,
+            width: 42,
+            decoration: BoxDecoration(
+              color: isDark ? Colors.white24 : Colors.black12,
+              borderRadius: BorderRadius.circular(10),
             ),
-            const SizedBox(height: 18),
+          ),
+          const SizedBox(height: 16),
 
-            // Header Pill & Title
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEA580C).withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Row(
+          // Modal Content Area
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title Header with Brand Badge
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.bolt_rounded,
-                        size: 14,
-                        color: Color(0xFFEA580C),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(
+                              Icons.auto_awesome_rounded,
+                              size: 13,
+                              color: AppColors.primary,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              "AI PREDICTOR ENGINE",
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.primary,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      SizedBox(width: 4),
-                      Text(
-                        "AI Powered Predictor",
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFFEA580C),
+                      IconButton(
+                        onPressed: () => Get.back(),
+                        icon: Icon(
+                          Icons.close_rounded,
+                          size: 20,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  RichText(
+                    text: TextSpan(
+                      text: "Predict Your ",
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
+                        letterSpacing: -0.5,
+                      ),
+                      children: const [
+                        TextSpan(
+                          text: "NEET Rank",
+                          style: TextStyle(color: AppColors.primary),
+                        ),
+                        TextSpan(text: "\n& College Admission Chances"),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Custom Sliding Radio Tabs
+                  _buildCustomRadioSelector(controller, isDark),
+
+                  const SizedBox(height: 20),
+
+                  // Full Name Field
+                  _buildInputField(
+                    label: "Full Name",
+                    hint: "e.g. Rahul Sharma",
+                    icon: Icons.person_outline_rounded,
+                    controller: controller.fullNameController,
+                    isDark: isDark,
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // Mobile & Email Row
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildInputField(
+                          label: "Mobile Number",
+                          hint: "9876543210",
+                          icon: Icons.phone_outlined,
+                          controller: controller.mobileController,
+                          isDark: isDark,
+                          keyboardType: TextInputType.phone,
+                          prefixText: "+91 ",
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _buildInputField(
+                          label: "Email Address",
+                          hint: "name@domain.com",
+                          icon: Icons.email_outlined,
+                          controller: controller.emailController,
+                          isDark: isDark,
+                          keyboardType: TextInputType.emailAddress,
                         ),
                       ),
                     ],
                   ),
-                ),
-                IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(Icons.close_rounded, size: 20),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-              ],
-            ),
 
-            const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-            RichText(
-              text: TextSpan(
-                text: "Predict Your ",
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
-                  letterSpacing: -0.5,
-                ),
-                children: const [
-                  TextSpan(
-                    text: "NEET Rank",
-                    style: TextStyle(color: Color(0xFFEA580C)),
+                  // Year & State Selection Row
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: _buildDropdownField(
+                          label: "Target Year",
+                          icon: Icons.calendar_today_outlined,
+                          value: controller.selectedYear,
+                          items: controller.years,
+                          isDark: isDark,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 6,
+                        child: _buildDropdownField(
+                          label: "Home State",
+                          icon: Icons.location_on_outlined,
+                          value: controller.selectedState,
+                          items: controller.states,
+                          isDark: isDark,
+                          hint: "Select State",
+                        ),
+                      ),
+                    ],
                   ),
-                  TextSpan(text: "\n& MBBS College Chances"),
-                ],
-              ),
-            ),
 
-            const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-            // Exam Type Switcher Tabs
-            Obx(
-              () => Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkCard : const Color(0xFFF1F5F9),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: controller.examTypes.map((type) {
-                    final isSelected =
-                        controller.selectedExamType.value == type;
-                    return Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          HapticFeedback.selectionClick();
-                          controller.selectedExamType.value = type;
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? const Color(0xFFEA580C)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: isSelected
-                                ? [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFFEA580C,
-                                      ).withOpacity(0.3),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ]
-                                : [],
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            type,
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 12.5,
-                              fontWeight: isSelected
-                                  ? FontWeight.w800
-                                  : FontWeight.w600,
-                              color: isSelected
-                                  ? Colors.white
-                                  : (isDark
+                  // NEET Score Slider Section
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? AppColors.darkCard
+                          : AppColors.lightBackground,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Expected NEET Score",
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  "Out of 720 Marks",
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 11,
+                                    color: isDark
                                         ? AppColors.darkTextSecondary
-                                        : AppColors.lightTextSecondary),
+                                        : AppColors.lightTextSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Obx(
+                              () => Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.primary.withOpacity(0.3),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  "${controller.scoreValue.value.toInt()}",
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Obx(
+                          () => SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              activeTrackColor: AppColors.primary,
+                              inactiveTrackColor: isDark
+                                  ? AppColors.darkBorder
+                                  : const Color(0xFFCBD5E1),
+                              thumbColor: Colors.white,
+                              thumbShape: const RoundSliderThumbShape(
+                                enabledThumbRadius: 10,
+                                elevation: 4,
+                              ),
+                              overlayColor: AppColors.primary.withOpacity(0.18),
+                              trackHeight: 6,
+                            ),
+                            child: Slider(
+                              value: controller.scoreValue.value,
+                              min: 0,
+                              max: 720,
+                              divisions: 720,
+                              onChanged: (val) =>
+                                  controller.setScoreFromSlider(val),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 18),
-
-            // Input Fields
-            _buildField(
-              context: context,
-              label: "Full Name",
-              icon: Icons.person_outline_rounded,
-              controller: controller.fullNameController,
-              isDark: isDark,
-            ),
-            const SizedBox(height: 12),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _buildField(
-                    context: context,
-                    label: "Mobile No.",
-                    icon: Icons.phone_outlined,
-                    controller: controller.mobileController,
-                    isDark: isDark,
-                    keyboardType: TextInputType.phone,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _buildField(
-                    context: context,
-                    label: "Email",
-                    icon: Icons.email_outlined,
-                    controller: controller.emailController,
-                    isDark: isDark,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _buildDropdown(
-                    label: "Year",
-                    icon: Icons.calendar_today_outlined,
-                    value: controller.selectedYear,
-                    items: controller.years,
-                    isDark: isDark,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _buildDropdown(
-                    label: "State",
-                    icon: Icons.location_on_outlined,
-                    value: controller.selectedState,
-                    items: controller.states,
-                    isDark: isDark,
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 18),
-
-            // NEET Score Slider & Indicator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "NEET Score (out of 720)",
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Obx(
-                  () => Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEA580C).withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      "${controller.scoreValue.value.toInt()} / 720",
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w900,
-                        fontSize: 13.5,
-                        color: Color(0xFFEA580C),
-                      ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
 
-            Obx(
-              () => SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                  activeTrackColor: const Color(0xFFEA580C),
-                  inactiveTrackColor: isDark
-                      ? AppColors.darkBorder
-                      : const Color(0xFFE2E8F0),
-                  thumbColor: const Color(0xFFEA580C),
-                  overlayColor: const Color(0xFFEA580C).withOpacity(0.2),
-                  trackHeight: 6,
-                ),
-                child: Slider(
-                  value: controller.scoreValue.value,
-                  min: 0,
-                  max: 720,
-                  divisions: 720,
-                  onChanged: (val) => controller.setScoreFromSlider(val),
-                ),
-              ),
-            ),
+                  const SizedBox(height: 24),
 
-            const SizedBox(height: 20),
-
-            // Submit Button
-            Obx(
-              () => SizedBox(
-                width: double.infinity,
-                height: 54,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFEA580C),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  onPressed: controller.isLoading.value
-                      ? null
-                      : controller.submitPrediction,
-                  child: controller.isLoading.value
-                      ? const AppLoader(color: Colors.white)
-                      : Text(
-                          "${controller.selectedExamType.value} Predictor",
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
+                  // Predict Action Button
+                  Obx(
+                    () => SizedBox(
+                      width: double.infinity,
+                      height: 54,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                ),
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : controller.submitPrediction,
+                        child: controller.isLoading.value
+                            ? const CupertinoActivityIndicator(
+                                radius: 12,
+                                color: Colors.white,
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.bolt_rounded, size: 20),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    "Predict ${controller.selectedExamType.value} Rank",
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Custom Animated Radio Capsule Selector
+  Widget _buildCustomRadioSelector(
+    PredictorController controller,
+    bool isDark,
+  ) {
+    return Obx(
+      () => Container(
+        height: 48,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkCard : const Color(0xFFF1F5F9),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+          ),
+        ),
+        child: Row(
+          children: controller.examTypes.map((type) {
+            final isSelected = controller.selectedExamType.value == type;
+            return Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  controller.selectedExamType.value = type;
+                },
+                behavior: HitTestBehavior.opaque,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 240),
+                  curve: Curves.easeOutCubic,
+                  decoration: BoxDecoration(
+                    color: isSelected ? AppColors.primary : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.32),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ]
+                        : [],
+                  ),
+                  alignment: Alignment.center,
+                  child: AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 200),
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      fontWeight: isSelected
+                          ? FontWeight.w800
+                          : FontWeight.w600,
+                      color: isSelected
+                          ? Colors.white
+                          : (isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary),
+                    ),
+                    child: Text(type),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
   }
 
-  Widget _buildField({
-    required BuildContext context,
+  // Structured Floating Label Input Box
+  Widget _buildInputField({
     required String label,
+    required String hint,
     required IconData icon,
     required TextEditingController controller,
     required bool isDark,
     TextInputType keyboardType = TextInputType.text,
+    String? prefixText,
+    List<TextInputFormatter>? inputFormatters,
   }) {
-    return Container(
-      height: 52,
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkCard : const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-          width: 1.2,
-        ),
-      ),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: isDark
-              ? AppColors.darkTextPrimary
-              : AppColors.lightTextPrimary,
-        ),
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
             fontFamily: 'Inter',
-            fontSize: 12.5,
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
             color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.lightTextSecondary,
-          ),
-          prefixIcon: Icon(icon, size: 18, color: const Color(0xFFEA580C)),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 6,
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
           ),
         ),
-      ),
+        const SizedBox(height: 6),
+        Container(
+          height: 50,
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkCard : Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              width: 1.2,
+            ),
+          ),
+          child: Row(
+            children: [
+              const SizedBox(width: 12),
+              Icon(icon, size: 18, color: AppColors.primary),
+              const SizedBox(width: 10),
+              if (prefixText != null)
+                Text(
+                  prefixText,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
+                  ),
+                ),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  keyboardType: keyboardType,
+                  inputFormatters: inputFormatters,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: isDark
+                          ? AppColors.darkTextSecondary.withOpacity(0.6)
+                          : AppColors.lightTextSecondary.withOpacity(0.7),
+                    ),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildDropdown({
+  // Structured Dropdown Selector Box
+  Widget _buildDropdownField({
     required String label,
     required IconData icon,
     required RxString value,
     required List<String> items,
     required bool isDark,
+    String hint = "",
   }) {
-    return Obx(
-      () => Container(
-        height: 52,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : const Color(0xFFF8FAFC),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-            width: 1.2,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
           ),
         ),
-        child: Row(
-          children: [
-            Icon(icon, size: 18, color: const Color(0xFFEA580C)),
-            const SizedBox(width: 8),
-            Expanded(
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: value.value,
-                  isExpanded: true,
-                  dropdownColor: isDark ? AppColors.darkCard : Colors.white,
-                  icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
-                  items: items
-                      .map(
-                        (item) => DropdownMenuItem(
-                          value: item,
-                          child: Text(
-                            item,
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightTextPrimary,
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (newVal) {
-                    if (newVal != null) value.value = newVal;
-                  },
-                ),
+        const SizedBox(height: 6),
+        Obx(
+          () => Container(
+            height: 50,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkCard : Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                width: 1.2,
               ),
             ),
-          ],
+            child: Row(
+              children: [
+                Icon(icon, size: 18, color: AppColors.primary),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: value.value.isEmpty ? null : value.value,
+                      hint: Text(
+                        hint,
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 13,
+                          color: isDark
+                              ? AppColors.darkTextSecondary.withOpacity(0.6)
+                              : AppColors.lightTextSecondary.withOpacity(0.7),
+                        ),
+                      ),
+                      isExpanded: true,
+                      dropdownColor: isDark ? AppColors.darkCard : Colors.white,
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 20,
+                      ),
+                      items: items
+                          .map(
+                            (item) => DropdownMenuItem(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.lightTextPrimary,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (newVal) {
+                        if (newVal != null) value.value = newVal;
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

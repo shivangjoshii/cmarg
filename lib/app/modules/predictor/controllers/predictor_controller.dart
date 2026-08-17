@@ -5,17 +5,15 @@ import '../../../routes/app_routes.dart';
 import '../../../../core/utils/app_toast.dart';
 
 class PredictorController extends GetxController {
-  final fullNameController = TextEditingController(text: "Pawan");
-  final mobileController = TextEditingController(text: "09279812411");
-  final emailController = TextEditingController(
-    text: "info.shivangg@gmail.com",
-  );
-  final scoreController = TextEditingController(text: "620");
+  final fullNameController = TextEditingController();
+  final mobileController = TextEditingController();
+  final emailController = TextEditingController();
+  final scoreController = TextEditingController(text: "500");
 
   var selectedExamType = "NEET UG".obs;
   var selectedYear = "2026".obs;
-  var selectedState = "Bihar".obs;
-  var scoreValue = 620.0.obs;
+  var selectedState = "".obs;
+  var scoreValue = 500.0.obs;
   var isLoading = false.obs;
 
   final List<String> examTypes = ["NEET UG", "NEET PG", "MDS"];
@@ -27,6 +25,9 @@ class PredictorController extends GetxController {
     "Karnataka",
     "Uttar Pradesh",
     "West Bengal",
+    "Rajasthan",
+    "Madhya Pradesh",
+    "Gujarat",
   ];
 
   void setScoreFromSlider(double val) {
@@ -45,13 +46,23 @@ class PredictorController extends GetxController {
     final name = fullNameController.text.trim();
     final mobile = mobileController.text.trim();
     final email = emailController.text.trim();
+    final state = selectedState.value;
     final score = scoreValue.value.toInt();
 
-    if (name.isEmpty || mobile.isEmpty || email.isEmpty) {
-      AppToast.error(
-        "Required Fields",
-        "Please complete all fields to calculate prediction.",
-      );
+    if (name.isEmpty) {
+      AppToast.error("Required", "Please enter your full name");
+      return;
+    }
+    if (mobile.length != 10) {
+      AppToast.error("Required", "Please enter a valid 10-digit mobile number");
+      return;
+    }
+    if (email.isEmpty || !GetUtils.isEmail(email)) {
+      AppToast.error("Required", "Please enter a valid email address");
+      return;
+    }
+    if (state.isEmpty) {
+      AppToast.error("Required", "Please select your home state");
       return;
     }
 
@@ -59,7 +70,7 @@ class PredictorController extends GetxController {
     await Future.delayed(const Duration(milliseconds: 900));
     isLoading.value = false;
 
-    Get.back(); // Dismiss bottom sheet
+    Get.back(); // Close modal
 
     final inputData = PredictorInputData(
       examType: selectedExamType.value,
@@ -67,7 +78,7 @@ class PredictorController extends GetxController {
       mobileNo: mobile,
       email: email,
       year: selectedYear.value,
-      state: selectedState.value,
+      state: state,
       score: score,
     );
 
