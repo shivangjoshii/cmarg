@@ -1,7 +1,7 @@
 import 'package:cmarg/app/modules/home/model/college_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
- import '../../../theme/app_colors.dart';
+import '../../../theme/app_colors.dart';
 import '../../../../core/utils/app_toast.dart';
 
 class CollegeDetailsView extends StatelessWidget {
@@ -14,9 +14,54 @@ class CollegeDetailsView extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: isDark
           ? AppColors.darkBackground
           : AppColors.lightBackground,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+            size: 20,
+          ),
+          onPressed: () => Get.back(),
+        ),
+        title: Text(
+          college.name,
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w800,
+            fontSize: 16,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.bookmark_border_rounded,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+              size: 22,
+            ),
+            onPressed: () {
+              AppToast.info(
+                "Saved",
+                "${college.name} added to your shortlist.",
+              );
+            },
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -24,83 +69,21 @@ class CollegeDetailsView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top Cover Banner
+                // Top Cover Banner Image
                 SizedBox(
-                  height: 260,
+                  height: 220,
                   width: double.infinity,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.network(
-                        college.bannerUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (c, e, s) =>
-                            Container(color: AppColors.primary),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.black.withOpacity(0.55),
-                              Colors.transparent,
-                              (isDark
-                                      ? AppColors.darkBackground
-                                      : AppColors.lightBackground)
-                                  .withOpacity(0.95),
-                            ],
-                            stops: const [0.0, 0.45, 1.0],
-                          ),
-                        ),
-                      ),
-                      SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: () => Get.back(),
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.4),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.arrow_back_ios_new_rounded,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.4),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.bookmark_border_rounded,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: Image.network(
+                    college.bannerUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (c, e, s) =>
+                        Container(color: AppColors.primary),
                   ),
                 ),
 
                 // Content Section
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
