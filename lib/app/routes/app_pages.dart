@@ -6,6 +6,7 @@ import 'package:cmarg/app/modules/dashboard/views/dashboard_view.dart';
 import 'package:cmarg/app/modules/network/no_internet_view.dart';
 import 'package:cmarg/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:cmarg/app/modules/onboarding/views/onboarding_view.dart';
+import 'package:cmarg/app/modules/predictor/predictor_result_view.dart';
 import 'package:cmarg/app/modules/splash/bindings/splash_binding.dart';
 import 'package:cmarg/app/modules/splash/views/splash_view.dart';
 import 'package:get/get.dart';
@@ -48,6 +49,11 @@ class AppPages {
       name: Routes.DASHBOARD,
       page: () => const DashboardView(),
       binding: DashboardBinding(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: Routes.PREDICTOR_RESULT,
+      page: () => const PredictorResultView(),
       transition: Transition.cupertino,
     ),
   ];

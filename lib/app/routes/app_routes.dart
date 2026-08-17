@@ -5,4 +5,5 @@ abstract class Routes {
   static const OTP = '/otp';
   static const NO_INTERNET = '/no-internet';
   static const DASHBOARD = '/dashboard';
+  static const PREDICTOR_RESULT = '/predictor-result';
 }
