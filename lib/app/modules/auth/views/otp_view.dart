@@ -20,6 +20,7 @@ class OtpView extends GetView<AuthController> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
@@ -32,11 +33,45 @@ class OtpView extends GetView<AuthController> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Client Logo Header
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.lightBorder),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Image.asset(
+                  'assets/images/image.png',
+                  height: 28,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) => const Text(
+                    "CareerMarg",
+                    style: TextStyle(
+                      color: Color(0xFFEF4444),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 28),
+
               const Text(
                 "Verify Code",
                 style: TextStyle(
@@ -47,20 +82,38 @@ class OtpView extends GetView<AuthController> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                "We sent a 6-digit verification code to +91 ${controller.phoneController.text.trim()}",
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 13.5,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
-                  height: 1.4,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "+91 ${controller.phoneController.text.trim()}",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => Get.back(),
+                    child: const Text(
+                      "Edit",
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 36),
 
-              // 6 Distinct OTP Boxes with Backward Key Listener
+              // 6-Digit Secure Input Fields
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
@@ -76,10 +129,13 @@ class OtpView extends GetView<AuthController> {
                         focusNode: controller.otpFocusNodes[index],
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 20,
                           fontWeight: FontWeight.w800,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -115,56 +171,81 @@ class OtpView extends GetView<AuthController> {
 
               const SizedBox(height: 32),
 
-              // Action Button with Morphing Animation on Success
-              Obx(
-                () => SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: controller.isSuccess.value
+              // Dynamic Interactive Morphing Button
+              Obx(() {
+                final isCompleted = controller.isSuccess.value;
+                final isBusy = controller.isLoading.value;
+
+                return Center(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeOutBack,
+                    width: isCompleted
+                        ? 60
+                        : MediaQuery.of(context).size.width - 48,
+                    height: 54,
+                    decoration: BoxDecoration(
+                      color: isCompleted
                           ? AppColors.success
                           : AppColors.primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(
+                        isCompleted ? 30 : 16,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color:
+                              (isCompleted
+                                      ? AppColors.success
+                                      : AppColors.primary)
+                                  .withOpacity(0.3),
+                          blurRadius: 16,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(
+                          isCompleted ? 30 : 16,
+                        ),
+                        onTap: (isBusy || isCompleted)
+                            ? null
+                            : controller.verifyOtp,
+                        child: Center(
+                          child: isBusy
+                              ? const CupertinoActivityIndicator(
+                                  radius: 12,
+                                  color: Colors.white,
+                                )
+                              : isCompleted
+                              ? const Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.white,
+                                  size: 30,
+                                ).animate().scale(
+                                  duration: 250.ms,
+                                  curve: Curves.easeOutBack,
+                                )
+                              : const Text(
+                                  "Verify & Continue",
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
                       ),
                     ),
-                    onPressed:
-                        (controller.isLoading.value ||
-                            controller.isSuccess.value)
-                        ? null
-                        : controller.verifyOtp,
-                    child: controller.isLoading.value
-                        ? const CupertinoActivityIndicator(
-                            radius: 12,
-                            color: Colors.white,
-                          )
-                        : controller.isSuccess.value
-                        ? const Icon(
-                            Icons.check_circle_rounded,
-                            color: Colors.white,
-                            size: 26,
-                          ).animate().scale(
-                            duration: 300.ms,
-                            curve: Curves.easeOutBack,
-                          )
-                        : const Text(
-                            "Verify & Continue",
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
                   ),
-                ),
-              ),
+                );
+              }),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
 
-              // Resend Code Countdown
+              // Resend Timer & CTA
               Center(
                 child: Obx(
                   () => controller.timerSeconds.value > 0

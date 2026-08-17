@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
- import 'package:get/get.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
 import '../../../theme/app_colors.dart';
 
@@ -19,25 +20,25 @@ class AuthView extends GetView<AuthController> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Premium Header with Geometric Glow & Branding
+            // Enhanced Header with Crisp Logo Capsule
             Container(
               width: double.infinity,
-              height: 320,
+              height: 330,
               decoration: const BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(40),
-                  bottomRight: Radius.circular(40),
+                  bottomLeft: Radius.circular(36),
+                  bottomRight: Radius.circular(36),
                 ),
               ),
               child: Stack(
                 children: [
                   Positioned(
-                    top: -40,
-                    right: -40,
+                    top: -50,
+                    right: -50,
                     child: Container(
-                      width: 220,
-                      height: 220,
+                      width: 230,
+                      height: 230,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white.withOpacity(0.08),
@@ -45,6 +46,7 @@ class AuthView extends GetView<AuthController> {
                     ),
                   ),
                   SafeArea(
+                    bottom: false,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24.0,
@@ -53,35 +55,51 @@ class AuthView extends GetView<AuthController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 8),
+
+                          // Logo Capsule Container
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.18),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.25),
-                              ),
-                            ),
-                            child: const Text(
-                              "CAREERMARG ADMISSIONS",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.8,
-                              ),
-                            ),
-                          ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.12),
+                                      blurRadius: 18,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: Image.asset(
+                                  'assets/images/image.png',
+                                  height: 25,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Text(
+                                        "CareerMarg",
+                                        style: TextStyle(
+                                          color: Color(0xFFEF4444),
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                ),
+                              )
+                              .animate()
+                              .fadeIn(duration: 400.ms)
+                              .scale(begin: const Offset(0.9, 0.9)),
+
                           const Spacer(),
+
                           const Text(
                             "Welcome Back!",
                             style: TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: 32,
+                              fontSize: 30,
                               fontWeight: FontWeight.w900,
                               color: Colors.white,
                               letterSpacing: -0.6,
@@ -89,11 +107,11 @@ class AuthView extends GetView<AuthController> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            "Enter your phone number to access AI NEET predictions, cutoffs, and direct abroad admission desk.",
+                            "Enter your phone number to access AI NEET rank predictions and direct medical admission desk.",
                             style: TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: 13.5,
-                              color: Colors.white.withOpacity(0.82),
+                              fontSize: 13,
+                              color: Colors.white.withOpacity(0.85),
                               height: 1.4,
                             ),
                           ),
@@ -106,7 +124,7 @@ class AuthView extends GetView<AuthController> {
               ),
             ),
 
-            // Main Phone Input & Action Section
+            // Form Input Section
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
               child: Column(
@@ -247,7 +265,7 @@ class AuthView extends GetView<AuthController> {
 
                   const SizedBox(height: 36),
 
-                  // Terms & Privacy with Actionable Links
+                  // Legal / Privacy Links
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
