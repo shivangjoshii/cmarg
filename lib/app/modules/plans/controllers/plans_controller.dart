@@ -1,3 +1,4 @@
+import 'package:cmarg/app/modules/predictor/models/predictor_data_model.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../models/plan_model.dart';
@@ -112,9 +113,17 @@ class PlansController extends GetxController {
 
   void handlePaymentSuccess(SubscriptionPlanModel plan, String paymentId) {
     AppToast.success(
-      "Activated",
+      "Plan Activated",
       "${plan.title} is now active (ID: $paymentId)",
     );
-    Get.offAllNamed(Routes.DASHBOARD);
+
+    Get.back(); // Pop from plans
+    final currentArgs = Get.arguments;
+    if (currentArgs is PredictorInputData) {
+      Get.offNamed(
+        Routes.PREDICTOR_RESULT,
+        arguments: {'data': currentArgs, 'isUnlocked': true},
+      );
+    }
   }
 }
