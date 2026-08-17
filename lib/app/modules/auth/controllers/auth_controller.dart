@@ -9,7 +9,7 @@ import '../../../../core/utils/app_toast.dart';
 class AuthController extends GetxController {
   final TextEditingController phoneController = TextEditingController();
 
-  // 6-digit OTP configuration
+  // 6-digit OTP fields
   final List<TextEditingController> otpControllers = List.generate(
     6,
     (_) => TextEditingController(),
@@ -57,15 +57,14 @@ class AuthController extends GetxController {
     }
 
     isLoading.value = true;
-    await Future.delayed(const Duration(milliseconds: 1200)); // API simulation
+    await Future.delayed(const Duration(milliseconds: 1000)); // API simulation
     isLoading.value = false;
 
     startResendTimer();
-    AppToast.success("OTP Sent", "Use demo 6-digit code: 123456");
+    AppToast.success("OTP Sent", "Use demo code: 123456");
     Get.toNamed(Routes.OTP);
   }
 
-  // Handle precise backspace navigation when a box is already empty
   KeyEventResult handleOtpKey(int index, KeyEvent event) {
     if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.backspace) {
@@ -79,13 +78,10 @@ class AuthController extends GetxController {
   }
 
   void onOtpChanged(String value, int index) {
-    if (value.isNotEmpty) {
-      if (index < 5) {
-        otpFocusNodes[index + 1].requestFocus();
-      }
+    if (value.isNotEmpty && index < 5) {
+      otpFocusNodes[index + 1].requestFocus();
     }
 
-    // Auto submit when all 6 digits are typed
     if (otpControllers.every((c) => c.text.isNotEmpty)) {
       verifyOtp();
     }
@@ -94,29 +90,33 @@ class AuthController extends GetxController {
   void verifyOtp() async {
     final otp = otpControllers.map((e) => e.text).join();
     if (otp.length != 6) {
-      AppToast.error(
-        "Incomplete Code",
-        "Please enter the complete 6-digit OTP",
-      );
+      AppToast.error("Incomplete Code", "Please enter all 6 digits");
       return;
     }
 
     isLoading.value = true;
-    await Future.delayed(const Duration(milliseconds: 1200)); // API simulation
+    await Future.delayed(const Duration(milliseconds: 1000)); // API simulation
 
     if (otp == "123456") {
       isLoading.value = false;
       isSuccess.value = true;
-      await SecurityService.saveToken("mock_jwt_careermarg_token_9921");
 
-      // Delay for success check animation before entering Dashboard
-      await Future.delayed(const Duration(milliseconds: 900));
+      // Save authenticated session in secure storage
+      await SecurityService.saveToken("mock_jwt_careermarg_auth_token_active");
+
+      await Future.delayed(const Duration(milliseconds: 700));
       Get.offAllNamed(Routes.DASHBOARD);
     } else {
+      // Revert loading & success state to normal on failure
       isLoading.value = false;
+      isSuccess.value = false;
+      for (var c in otpControllers) {
+        c.clear();
+      }
+      otpFocusNodes[0].requestFocus();
       AppToast.error(
-        "Invalid Code",
-        "The OTP entered is incorrect. Try 123456",
+        "Invalid OTP",
+        "The code you entered is invalid. Try 123456",
       );
     }
   }

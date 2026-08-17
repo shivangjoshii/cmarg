@@ -1,6 +1,8 @@
 import 'package:cmarg/app/modules/auth/bindings/auth_binding.dart';
 import 'package:cmarg/app/modules/auth/views/auth_view.dart';
 import 'package:cmarg/app/modules/auth/views/otp_view.dart';
+import 'package:cmarg/app/modules/dashboard/bindings/dashboard_binding.dart';
+import 'package:cmarg/app/modules/dashboard/views/dashboard_view.dart';
 import 'package:cmarg/app/modules/network/no_internet_view.dart';
 import 'package:cmarg/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:cmarg/app/modules/onboarding/views/onboarding_view.dart';
@@ -39,6 +41,13 @@ class AppPages {
     GetPage(
       name: Routes.OTP,
       page: () => const OtpView(),
+      binding: AuthBinding(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: Routes.DASHBOARD,
+      page: () => const DashboardView(),
+      binding: DashboardBinding(),
       transition: Transition.cupertino,
     ),
   ];
