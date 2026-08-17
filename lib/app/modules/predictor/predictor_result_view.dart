@@ -4,6 +4,7 @@ import 'package:cmarg/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
 class PredictorResultView extends StatelessWidget {
   const PredictorResultView({super.key});
 
@@ -23,362 +24,482 @@ class PredictorResultView extends StatelessWidget {
           ? AppColors.darkBackground
           : AppColors.lightBackground,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
             size: 20,
           ),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
-          "AI Prediction Report",
+        title: Text(
+          "NEET ${data.year} Prediction Report",
           style: TextStyle(
             fontFamily: 'Inter',
             fontWeight: FontWeight.w800,
             fontSize: 17,
-            color: Colors.white,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
           ),
         ),
+        centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.share_outlined,
-              color: Colors.white,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
               size: 20,
             ),
-            onPressed: () {
-              Get.snackbar("Share", "Preparing your report link...");
-            },
+            onPressed: () => Get.snackbar("Share", "Preparing report link..."),
           ),
         ],
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Primary Header Wrap
+            // 1. Premium Dynamic User Identity & Score Card
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(32),
-                  bottomRight: Radius.circular(32),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: isDark
+                      ? [const Color(0xFF1E1B4B), const Color(0xFF111827)]
+                      : [const Color(0xFF5A2CEE), const Color(0xFF4318B4)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.28),
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+              padding: const EdgeInsets.all(18),
               child: Column(
                 children: [
-                  // Candidate Identity Card
+                  Row(
+                    children: [
+                      // Avatar Halo
+                      Stack(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withOpacity(0.18),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.35),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: const Center(
+                              child: Icon(
+                                Icons.person_rounded,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: const BoxDecoration(
+                                color: AppColors.success,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.check,
+                                size: 10,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    data.fullName,
+                                    style: const TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
+                                      letterSpacing: -0.3,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                const Icon(
+                                  Icons.verified_rounded,
+                                  color: AppColors.accent,
+                                  size: 16,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              "${data.state} State Quota • ${data.year} Session",
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 12,
+                                color: Colors.white.withOpacity(0.8),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.18),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Text(
+                          data.examType,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Inline Metric Chips
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.2)),
+                      color: Colors.black.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(
-                            Icons.person_rounded,
-                            color: AppColors.primary,
-                            size: 26,
-                          ),
+                        _buildHeroScoreItem(
+                          "NEET SCORE",
+                          "${data.score}/720",
+                          AppColors.accent,
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                data.fullName,
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                "${data.state} • ${data.year} Target",
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontSize: 12,
-                                ),
-                              ),
+                        Container(height: 24, width: 1, color: Colors.white24),
+                        _buildHeroScoreItem(
+                          "PREDICTED AIR",
+                          "#$predictedAIR",
+                          Colors.white,
+                        ),
+                        Container(height: 24, width: 1, color: Colors.white24),
+                        _buildHeroScoreItem(
+                          "PERCENTILE",
+                          "${percentile.toStringAsFixed(2)}%",
+                          Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Section Title
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Eligible Colleges & Quotas",
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                Text(
+                  "10-Year Cutoff Matched",
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 11.5,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // Visible Card 1
+            _buildCollegeCard(
+              name: "Patna Medical College & Hospital (PMCH)",
+              location: "Patna, Bihar",
+              quota: "State Quota • 85%",
+              matchBadge: "96% High Match",
+              badgeColor: AppColors.success,
+              feeInfo: "₹ 1.2 Lakh / Year",
+              cutoffRank: "Closing AIR: 4,520",
+              isDark: isDark,
+            ),
+
+            const SizedBox(height: 12),
+
+            // Visible Card 2
+            _buildCollegeCard(
+              name: "Dhaka National Medical College",
+              location: "Dhaka, Bangladesh",
+              quota: "NMC Recognized MBBS Direct",
+              matchBadge: "Guaranteed Admission",
+              badgeColor: AppColors.primary,
+              feeInfo: "₹ 32 Lakh Total Package",
+              cutoffRank: "Direct Merit Desk",
+              isDark: isDark,
+            ),
+
+            const SizedBox(height: 12),
+
+            // Peeking Cards Behind Higher Positioned Blurred Dissolve Box
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Cards underneath
+                Column(
+                  children: [
+                    _buildCollegeCard(
+                      name: "All India Institute of Medical Sciences (AIIMS)",
+                      location: "New Delhi",
+                      quota: "AIQ 15% Central Counseling",
+                      matchBadge: "Competitive Match",
+                      badgeColor: AppColors.warning,
+                      feeInfo: "₹ 6,850 / Year",
+                      cutoffRank: "Closing AIR: 65",
+                      isDark: isDark,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildCollegeCard(
+                      name: "Kazakh National Medical University",
+                      location: "Almaty, Kazakhstan",
+                      quota: "NMC • WHO • Ministry Approved",
+                      matchBadge: "Direct Seat Allotment",
+                      badgeColor: AppColors.success,
+                      feeInfo: "₹ 18.5 Lakh Full Course",
+                      cutoffRank: "Eligibility: Qualifying NEET",
+                      isDark: isDark,
+                    ),
+                  ],
+                ),
+
+                // Gradual Dissolve Blur
+                Positioned.fill(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5.5, sigmaY: 5.5),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              (isDark
+                                      ? AppColors.darkBackground
+                                      : AppColors.lightBackground)
+                                  .withOpacity(0.2),
+                              (isDark
+                                      ? AppColors.darkBackground
+                                      : AppColors.lightBackground)
+                                  .withOpacity(0.92),
+                              (isDark
+                                  ? AppColors.darkBackground
+                                  : AppColors.lightBackground),
                             ],
+                            stops: const [0.0, 0.45, 0.90],
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Lifted Curiosity Action Box (Placed near top of the blur)
+                Positioned(
+                  left: 4,
+                  right: 4,
+                  top: 36, // Lifted directly over the peeking cards
+                  child: Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.darkSurface : Colors.white,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                        width: 1.2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.16),
+                          blurRadius: 24,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: AppColors.accent.withOpacity(0.18),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.lock_person_rounded,
+                                size: 18,
+                                color: AppColors.accent,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              "28+ More Colleges & Cutoffs Hidden",
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          "Unlock complete fee breakups, round-wise rank cutoffs, and bond conditions with CareerMarg 1-on-1 counselor.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 11.5,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                            height: 1.35,
                           ),
-                          decoration: BoxDecoration(
-                            color: AppColors.accent,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            data.examType,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              color: AppColors.darkBackground,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w900,
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            onPressed: () {
+                              Get.snackbar(
+                                "Counseling Activated",
+                                "A CareerMarg medical specialist is reviewing your scorecard.",
+                              );
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Want Complete Details",
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                SizedBox(width: 6),
+                                Icon(Icons.arrow_forward_rounded, size: 16),
+                              ],
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-
-                  // 3-Metric Score Tiles
-                  Row(
-                    children: [
-                      _buildMetricTile(
-                        "NEET SCORE",
-                        "${data.score}/720",
-                        Icons.speed_rounded,
-                      ),
-                      const SizedBox(width: 10),
-                      _buildMetricTile(
-                        "PREDICTED AIR",
-                        "#$predictedAIR",
-                        Icons.leaderboard_rounded,
-                      ),
-                      const SizedBox(width: 10),
-                      _buildMetricTile(
-                        "PERCENTILE",
-                        "${percentile.toStringAsFixed(2)}%",
-                        Icons.percent_rounded,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
 
-            // College Predictions Section
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Top Qualifying Medical Colleges",
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 17,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.3,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Unlocked Card 1
-                  _buildCollegeCard(
-                    name: "Patna Medical College & Hospital (PMCH)",
-                    location: "Patna, Bihar",
-                    quota: "State Quota • 85%",
-                    chance: "96% High Match",
-                    badgeColor: AppColors.success,
-                    isDark: isDark,
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Unlocked Card 2
-                  _buildCollegeCard(
-                    name: "Dhaka National Medical College",
-                    location: "Dhaka, Bangladesh",
-                    quota: "NMC Recognized MBBS Direct",
-                    chance: "Guaranteed Admission",
-                    badgeColor: AppColors.primary,
-                    isDark: isDark,
-                  ),
-                  const SizedBox(height: 14),
-
-                  // Blurred Hidden Matrix with Unlock Banner
-                  Stack(
-                    children: [
-                      Column(
-                        children: [
-                          _buildCollegeCard(
-                            name:
-                                "All India Institute of Medical Sciences (AIIMS)",
-                            location: "New Delhi",
-                            quota: "AIQ • 15%",
-                            chance: "Competitive",
-                            badgeColor: AppColors.warning,
-                            isDark: isDark,
-                          ),
-                          const SizedBox(height: 12),
-                          _buildCollegeCard(
-                            name: "Kazakh National Medical University",
-                            location: "Almaty, Kazakhstan",
-                            quota: "MCI / WHO Approved",
-                            chance: "Direct Quota",
-                            badgeColor: AppColors.success,
-                            isDark: isDark,
-                          ),
-                        ],
-                      ),
-
-                      // Glass Blur Overlay
-                      Positioned.fill(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color:
-                                    (isDark
-                                            ? AppColors.darkBackground
-                                            : Colors.white)
-                                        .withOpacity(0.7),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: isDark
-                                      ? AppColors.darkBorder
-                                      : AppColors.lightBorder,
-                                ),
-                              ),
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 48,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary.withOpacity(
-                                        0.12,
-                                      ),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.lock_outline_rounded,
-                                      color: AppColors.primary,
-                                      size: 24,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  const Text(
-                                    "28+ More Colleges & Cutoffs Hidden",
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "Unlock verified fee structures, round-wise cutoffs & direct counseling guidance.",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 12,
-                                      color: isDark
-                                          ? AppColors.darkTextSecondary
-                                          : AppColors.lightTextSecondary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 48,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.primary,
-                                        foregroundColor: Colors.white,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            14,
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        Get.snackbar(
-                                          "Counseling Request",
-                                          "A CareerMarg medical specialist is reaching out.",
-                                        );
-                                      },
-                                      child: const Text(
-                                        "Want Complete Details",
-                                        style: TextStyle(
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            const SizedBox(height: 120), // Padding buffer for the lifted stack
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMetricTile(String title, String value, IconData icon) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.15)),
+  Widget _buildHeroScoreItem(String label, String value, Color valueColor) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 9,
+            fontWeight: FontWeight.w700,
+            color: Colors.white70,
+            letterSpacing: 0.3,
+          ),
         ),
-        child: Column(
-          children: [
-            Icon(icon, color: Colors.white70, size: 16),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                color: Colors.white70,
-                fontSize: 9,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              value,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ],
+        const SizedBox(height: 3),
+        Text(
+          value,
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 14.5,
+            fontWeight: FontWeight.w900,
+            color: valueColor,
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -386,8 +507,10 @@ class PredictorResultView extends StatelessWidget {
     required String name,
     required String location,
     required String quota,
-    required String chance,
+    required String matchBadge,
     required Color badgeColor,
+    required String feeInfo,
+    required String cutoffRank,
     required bool isDark,
   }) {
     return Container(
@@ -403,8 +526,8 @@ class PredictorResultView extends StatelessWidget {
           if (!isDark)
             BoxShadow(
               color: Colors.black.withOpacity(0.02),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
         ],
       ),
@@ -412,16 +535,43 @@ class PredictorResultView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Text(
-                  name,
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w800,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w800,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on_outlined,
+                          size: 13,
+                          color: AppColors.lightTextSecondary,
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          location,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 11.5,
+                            color: AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -431,7 +581,7 @@ class PredictorResultView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  chance,
+                  matchBadge,
                   style: TextStyle(
                     fontFamily: 'Inter',
                     color: badgeColor,
@@ -442,34 +592,48 @@ class PredictorResultView extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              const Icon(
-                Icons.location_on_outlined,
-                size: 14,
-                color: AppColors.lightTextSecondary,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                location,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 12,
-                  color: AppColors.lightTextSecondary,
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkSurface : const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.payments_outlined,
+                      size: 14,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      feeInfo,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w700,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const Spacer(),
-              Text(
-                quota,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
+                Text(
+                  cutoffRank,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.lightTextSecondary,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
