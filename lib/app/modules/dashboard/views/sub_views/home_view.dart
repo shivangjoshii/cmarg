@@ -1,4 +1,10 @@
+import 'package:cmarg/app/modules/home/controllers/home_conrtoller.dart';
+import 'package:cmarg/app/modules/home/widgets/home_banner_carousel.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../home/widgets/popular_courses_section.dart';
+import '../../../home/widgets/featured_colleges_section.dart';
 import '../../../../theme/app_colors.dart';
 
 class HomeView extends StatelessWidget {
@@ -6,72 +12,109 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.isRegistered<HomeController>()
+        ? Get.find<HomeController>()
+        : Get.put(HomeController());
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.darkBackground
           : AppColors.lightBackground,
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Find Your Medical University",
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Explore NMC & WHO recognized colleges across India & Abroad",
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 13,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                height: 140,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.primary, Color(0xFF8B5CF6)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.all(18),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+              // 1. Top Bar inside Scroll
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
+                child: Row(
                   children: [
-                    Text(
-                      "NEET 2026 Guidance Open",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
+                    Image.asset(
+                      'assets/image/image.png',
+                      height: 28,
+                      fit: BoxFit.contain,
+                      errorBuilder: (c, e, s) => const Text(
+                        "CareerMarg",
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
-                    SizedBox(height: 6),
-                    Text(
-                      "Book free 1-on-1 counseling with MCI specialists.",
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                    const Spacer(),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.darkCard : Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder,
+                          width: 1.2,
+                        ),
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.notifications_none_rounded,
+                          size: 19,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
+                        ),
+                        padding: EdgeInsets.zero,
+                        onPressed: () {},
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.darkCard : Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder,
+                          width: 1.2,
+                        ),
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.menu_rounded,
+                          size: 19,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
+                        ),
+                        padding: EdgeInsets.zero,
+                        onPressed: () {},
+                      ),
                     ),
                   ],
                 ),
               ),
+
+              // 2. Overlapping Banner Carousel & Centered Search Bar
+              HomeCarouselHeader(controller: controller, isDark: isDark),
+              const SizedBox(height: 18),
+
+              // 3. Popular Medical Courses
+              PopularCoursesSection(isDark: isDark),
+              const SizedBox(height: 24),
+
+              FeaturedCollegesSection(controller: controller, isDark: isDark),
+
+              // Bottom Buffer for Floating Glass Dock
+              const SizedBox(height: 110),
             ],
           ),
         ),
