@@ -6,4 +6,5 @@ abstract class Routes {
   static const NO_INTERNET = '/no-internet';
   static const DASHBOARD = '/dashboard';
   static const PREDICTOR_RESULT = '/predictor-result';
+  static const PLANS = '/plans';
 }

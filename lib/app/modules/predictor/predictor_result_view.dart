@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:cmarg/app/modules/predictor/models/predictor_data_model.dart';
+import 'package:cmarg/app/routes/app_routes.dart';
 import 'package:cmarg/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -369,7 +370,7 @@ class PredictorResultView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
 
                   Center(
                     child: Container(
@@ -465,10 +466,7 @@ class PredictorResultView extends StatelessWidget {
                                 ),
                               ),
                               onPressed: () {
-                                Get.snackbar(
-                                  "Counseling Activated",
-                                  "A CareerMarg medical specialist is reviewing your scorecard.",
-                                );
+                                Get.toNamed(Routes.PLANS);
                               },
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
