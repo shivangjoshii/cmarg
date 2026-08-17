@@ -55,39 +55,44 @@ class AuthView extends GetView<AuthController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 4),
 
-                          // Logo Capsule Container
-                          Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.12),
-                                      blurRadius: 18,
-                                      offset: const Offset(0, 6),
+                          Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 10,
                                     ),
-                                  ],
-                                ),
-                                child: Image.asset(
-                                  'assets/images/image.png',
-                                  height: 25,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Text(
-                                        "CareerMarg",
-                                        style: TextStyle(
-                                          color: Color(0xFFEF4444),
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 18,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.12),
+                                          blurRadius: 18,
+                                          offset: const Offset(0, 6),
                                         ),
-                                      ),
-                                ),
+                                      ],
+                                    ),
+                                    child: Image.asset(
+                                      'assets/images/image.png',
+                                      height: 25,
+                                      fit: BoxFit.contain,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Text(
+                                                "CareerMarg",
+                                                style: TextStyle(
+                                                  color: Color(0xFFEF4444),
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                    ),
+                                  ),
+                                ],
                               )
                               .animate()
                               .fadeIn(duration: 400.ms)
