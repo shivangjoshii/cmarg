@@ -1,8 +1,9 @@
-import 'package:cmarg/app/modules/onboarding/model/onboarding_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../model/onboarding_item_model.dart';
+import '../../../data/services/security_service.dart';
 import '../../../routes/app_routes.dart';
- 
+
 class OnboardingController extends GetxController {
   final PageController pageController = PageController();
   var currentPage = 0.obs;
@@ -70,6 +71,11 @@ class OnboardingController extends GetxController {
     ),
   ];
 
+  Future<void> _completeOnboarding() async {
+    await SecurityService.setOnboardingSeen();
+    Get.offNamed(Routes.AUTH);
+  }
+
   void onNext() {
     if (currentPage.value < slides.length - 1) {
       pageController.nextPage(
@@ -77,12 +83,12 @@ class OnboardingController extends GetxController {
         curve: Curves.easeInOutCubic,
       );
     } else {
-      Get.offNamed(Routes.AUTH);
+      _completeOnboarding();
     }
   }
 
   void onSkip() {
-    Get.offNamed(Routes.AUTH);
+    _completeOnboarding();
   }
 
   @override

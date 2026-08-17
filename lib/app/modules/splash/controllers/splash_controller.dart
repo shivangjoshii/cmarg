@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../data/services/security_service.dart';
 import '../../../routes/app_routes.dart';
 
 class SplashController extends GetxController {
@@ -10,6 +11,16 @@ class SplashController extends GetxController {
 
   void _handleBoot() async {
     await Future.delayed(const Duration(seconds: 2));
-    Get.offNamed(Routes.ONBOARDING);
+
+    final bool seenOnboarding = await SecurityService.hasSeenOnboarding();
+    final String? token = await SecurityService.getToken();
+
+    if (!seenOnboarding) {
+      Get.offNamed(Routes.ONBOARDING);
+    } else if (token != null && token.isNotEmpty) {
+      Get.offNamed(Routes.DASHBOARD);
+    } else {
+      Get.offNamed(Routes.AUTH);
+    }
   }
 }
