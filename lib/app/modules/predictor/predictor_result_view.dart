@@ -4,7 +4,6 @@ import 'package:cmarg/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 class PredictorResultView extends StatelessWidget {
   const PredictorResultView({super.key});
 
@@ -29,7 +28,7 @@ class PredictorResultView extends StatelessWidget {
         scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
+            Icons.arrow_back_rounded,
             color: isDark
                 ? AppColors.darkTextPrimary
                 : AppColors.lightTextPrimary,
@@ -67,7 +66,7 @@ class PredictorResultView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Premium Dynamic User Identity & Score Card
+            // 1. Dynamic User Identity & Hero Score Card
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
@@ -92,7 +91,6 @@ class PredictorResultView extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      // Avatar Halo
                       Stack(
                         children: [
                           Container(
@@ -239,7 +237,7 @@ class PredictorResultView extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Section Title
+            // Section Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -268,7 +266,7 @@ class PredictorResultView extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Visible Card 1
+            // Visible Qualified College Card 1
             _buildCollegeCard(
               name: "Patna Medical College & Hospital (PMCH)",
               location: "Patna, Bihar",
@@ -282,7 +280,7 @@ class PredictorResultView extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Visible Card 2
+            // Visible Qualified College Card 2
             _buildCollegeCard(
               name: "Dhaka National Medical College",
               location: "Dhaka, Bangladesh",
@@ -296,43 +294,57 @@ class PredictorResultView extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Peeking Cards Behind Higher Positioned Blurred Dissolve Box
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // Cards underneath
-                Column(
-                  children: [
-                    _buildCollegeCard(
-                      name: "All India Institute of Medical Sciences (AIIMS)",
-                      location: "New Delhi",
-                      quota: "AIQ 15% Central Counseling",
-                      matchBadge: "Competitive Match",
-                      badgeColor: AppColors.warning,
-                      feeInfo: "₹ 6,850 / Year",
-                      cutoffRank: "Closing AIR: 65",
-                      isDark: isDark,
+            // Peeking Cards with Seamless Fading Mask & Clean Bottom Edge
+            ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Stack(
+                children: [
+                  // Ghost College Cards (Soft edges, no harsh border)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: Column(
+                      children: [
+                        _buildGhostCollegeCard(
+                          name:
+                              "All India Institute of Medical Sciences (AIIMS)",
+                          location: "New Delhi",
+                          quota: "AIQ 15% Central Counseling",
+                          matchBadge: "Competitive Match",
+                          badgeColor: AppColors.warning,
+                          feeInfo: "₹ 6,850 / Year",
+                          cutoffRank: "Closing AIR: 65",
+                          isDark: isDark,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildGhostCollegeCard(
+                          name: "Kazakh National Medical University",
+                          location: "Almaty, Kazakhstan",
+                          quota: "NMC • WHO • Ministry Approved",
+                          matchBadge: "Direct Seat Allotment",
+                          badgeColor: AppColors.success,
+                          feeInfo: "₹ 18.5 Lakh Full Course",
+                          cutoffRank: "Eligibility: Qualifying NEET",
+                          isDark: isDark,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildGhostCollegeCard(
+                          name: "Kasturba Medical College (KMC)",
+                          location: "Manipal, Karnataka",
+                          quota: "Deemed University Management",
+                          matchBadge: "High Probability",
+                          badgeColor: AppColors.primary,
+                          feeInfo: "₹ 17.8 Lakh / Year",
+                          cutoffRank: "Closing AIR: 42,100",
+                          isDark: isDark,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    _buildCollegeCard(
-                      name: "Kazakh National Medical University",
-                      location: "Almaty, Kazakhstan",
-                      quota: "NMC • WHO • Ministry Approved",
-                      matchBadge: "Direct Seat Allotment",
-                      badgeColor: AppColors.success,
-                      feeInfo: "₹ 18.5 Lakh Full Course",
-                      cutoffRank: "Eligibility: Qualifying NEET",
-                      isDark: isDark,
-                    ),
-                  ],
-                ),
+                  ),
 
-                // Gradual Dissolve Blur
-                Positioned.fill(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                  // High-Diffusion Glass Fade Overlay
+                  Positioned.fill(
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5.5, sigmaY: 5.5),
+                      filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                       child: Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -342,134 +354,148 @@ class PredictorResultView extends StatelessWidget {
                               (isDark
                                       ? AppColors.darkBackground
                                       : AppColors.lightBackground)
-                                  .withOpacity(0.2),
+                                  .withOpacity(0.1),
                               (isDark
                                       ? AppColors.darkBackground
                                       : AppColors.lightBackground)
-                                  .withOpacity(0.92),
+                                  .withOpacity(0.85),
                               (isDark
                                   ? AppColors.darkBackground
                                   : AppColors.lightBackground),
                             ],
-                            stops: const [0.0, 0.45, 0.90],
+                            stops: const [0.0, 0.40, 0.75],
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                  const  SizedBox(height: 20.0),
 
-                // Lifted Curiosity Action Box (Placed near top of the blur)
-                Positioned(
-                  left: 4,
-                  right: 4,
-                  top: 36, // Lifted directly over the peeking cards
-                  child: Container(
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurface : Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(
-                        color: isDark
-                            ? AppColors.darkBorder
-                            : AppColors.lightBorder,
-                        width: 1.2,
+                  Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.0),
+                        color: AppColors.lightBackground,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.16),
-                          blurRadius: 24,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: AppColors.accent.withOpacity(0.18),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.lock_person_rounded,
-                                size: 18,
-                                color: AppColors.accent,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Text(
-                              "28+ More Colleges & Cutoffs Hidden",
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 14.5,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: -0.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Unlock complete fee breakups, round-wise rank cutoffs, and bond conditions with CareerMarg 1-on-1 counselor.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 11.5,
-                            color: isDark
-                                ? AppColors.darkTextSecondary
-                                : AppColors.lightTextSecondary,
-                            height: 1.35,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 48,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                            onPressed: () {
-                              Get.snackbar(
-                                "Counseling Activated",
-                                "A CareerMarg medical specialist is reviewing your scorecard.",
-                              );
-                            },
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Want Complete Details",
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                                SizedBox(width: 6),
-                                Icon(Icons.arrow_forward_rounded, size: 16),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                      child: Icon(
+                        Icons.arrow_downward_rounded,
+                        color: AppColors.darkSurface,
+                      ),
                     ),
                   ),
-                ),
-              ],
+
+                  // Curiosity Action Box Docked Right where Blur Ends
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 150,
+                    child: Container(
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.darkSurface : Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder,
+                          width: 1.2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.14),
+                            blurRadius: 20,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.accent.withOpacity(0.18),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.lock_person_rounded,
+                                  size: 18,
+                                  color: AppColors.accent,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                "28+ More Colleges & Cutoffs Hidden",
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 14.5,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            "Unlock complete fee breakups, round-wise rank cutoffs, and bond conditions with CareerMarg 1-on-1 counselor.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 11.5,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : AppColors.lightTextSecondary,
+                              height: 1.35,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 48,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              onPressed: () {
+                                Get.snackbar(
+                                  "Counseling Activated",
+                                  "A CareerMarg medical specialist is reviewing your scorecard.",
+                                );
+                              },
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Want Complete Details",
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  SizedBox(width: 6),
+                                  Icon(Icons.arrow_forward_rounded, size: 16),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
 
-            const SizedBox(height: 120), // Padding buffer for the lifted stack
+            const SizedBox(height: 24),
           ],
         ),
       ),
@@ -530,6 +556,131 @@ class PredictorResultView extends StatelessWidget {
               offset: const Offset(0, 3),
             ),
         ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w800,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on_outlined,
+                          size: 13,
+                          color: AppColors.lightTextSecondary,
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          location,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 11.5,
+                            color: AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: badgeColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  matchBadge,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    color: badgeColor,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkSurface : const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.payments_outlined,
+                      size: 14,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      feeInfo,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w700,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  cutoffRank,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.lightTextSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGhostCollegeCard({
+    required String name,
+    required String location,
+    required String quota,
+    required String matchBadge,
+    required Color badgeColor,
+    required String feeInfo,
+    required String cutoffRank,
+    required bool isDark,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: (isDark ? AppColors.darkCard : Colors.white).withOpacity(0.6),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
