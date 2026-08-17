@@ -493,6 +493,35 @@ class PredictorResultView extends StatelessWidget {
               ),
             ),
 
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+
+              children: [
+                Text(
+                  ' Powered by',
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.grey,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+
+                Text(
+                  'CareerMarg',
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 30,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.grey,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
+            ),
+
             const SizedBox(height: 24),
           ],
         ),
