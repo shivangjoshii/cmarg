@@ -1,5 +1,6 @@
 import 'package:cmarg/app/modules/auth/bindings/auth_binding.dart';
 import 'package:cmarg/app/modules/auth/views/auth_view.dart';
+import 'package:cmarg/app/modules/auth/views/otp_view.dart';
 import 'package:cmarg/app/modules/network/no_internet_view.dart';
 import 'package:cmarg/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:cmarg/app/modules/onboarding/views/onboarding_view.dart';
@@ -34,6 +35,11 @@ class AppPages {
       name: Routes.NO_INTERNET,
       page: () => const NoInternetView(),
       transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: Routes.OTP,
+      page: () => const OtpView(),
+      transition: Transition.cupertino,
     ),
   ];
 }
