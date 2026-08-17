@@ -11,13 +11,11 @@ class HomeStickySearchBarDelegate extends SliverPersistentHeaderDelegate {
     required this.isDark,
   });
 
-  // minExtent: Height when stuck to the top
   @override
   double get minExtent => 68.0;
 
-  // maxExtent: Height at top resting state (accommodating the 26px overlap)
   @override
-  double get maxExtent => 94.0;
+  double get maxExtent => 68.0;
 
   @override
   Widget build(
@@ -25,20 +23,12 @@ class HomeStickySearchBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    // Calculate scroll progress (0.0 at rest, 1.0 when fully stuck to top)
-    final double progress = (shrinkOffset / (maxExtent - minExtent)).clamp(
-      0.0,
-      1.0,
-    );
-
     return Container(
-      // Smoothly transition background to solid only when pinning to the top
-      color: (isDark ? AppColors.darkBackground : AppColors.lightBackground)
-          .withOpacity(progress),
+      color: isDark ? AppColors.darkBackground : AppColors.lightBackground,
       alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Container(
         height: 52,
-        margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF1B2234) : Colors.white,
           borderRadius: BorderRadius.circular(16),

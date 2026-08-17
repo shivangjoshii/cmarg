@@ -32,11 +32,11 @@ class HomeView extends StatelessWidget {
             // 1. Top Header Bar (Scrolls away naturally)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
                 child: Row(
                   children: [
                     Image.asset(
-                      'assets/image/image.png',
+                      'assets/images/image.png',
                       height: 28,
                       fit: BoxFit.contain,
                       errorBuilder: (c, e, s) => const Text(
@@ -106,20 +106,12 @@ class HomeView extends StatelessWidget {
               ),
             ),
 
-            // 2. Banner Carousel with negative bottom margin to enable overlap
+            // 2. Banner Carousel
             SliverToBoxAdapter(
-              child: Container(
-                margin: const EdgeInsets.only(
-                  bottom: -26,
-                ), // Pulls the search bar over the banner
-                child: HomeBannerCarousel(
-                  controller: controller,
-                  isDark: isDark,
-                ),
-              ),
+              child: HomeBannerCarousel(controller: controller, isDark: isDark),
             ),
 
-            // 3. Pinned Sticky Search Bar (Overlaps banner initially, sticks to top when scrolling)
+            // 3. Pinned Sticky Search Bar
             SliverPersistentHeader(
               pinned: true,
               delegate: HomeStickySearchBarDelegate(
@@ -128,10 +120,10 @@ class HomeView extends StatelessWidget {
               ),
             ),
 
-            // 4. Popular Medical Courses Section
+            // 4. Popular Medical Courses
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 10),
                 child: PopularCoursesSection(isDark: isDark),
               ),
             ),
@@ -147,7 +139,7 @@ class HomeView extends StatelessWidget {
               ),
             ),
 
-            // Bottom Spacing for Floating Glass Dock
+            // Bottom padding buffer for floating glass bottom dock
             const SliverToBoxAdapter(child: SizedBox(height: 120)),
           ],
         ),
