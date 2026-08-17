@@ -1,3 +1,5 @@
+import 'package:cmarg/app/modules/auth/bindings/auth_binding.dart';
+import 'package:cmarg/app/modules/auth/views/auth_view.dart';
 import 'package:cmarg/app/modules/onboarding/bindings/onboarding_binding.dart';
 import 'package:cmarg/app/modules/onboarding/views/onboarding_view.dart';
 import 'package:cmarg/app/modules/splash/bindings/splash_binding.dart';
@@ -19,6 +21,12 @@ class AppPages {
       name: Routes.ONBOARDING,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: Routes.AUTH,
+      page: () => const AuthView(),
+      binding: AuthBinding(),
       transition: Transition.cupertino,
     ),
   ];

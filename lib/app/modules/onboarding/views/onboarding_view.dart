@@ -76,7 +76,6 @@ class OnboardingView extends GetView<OnboardingController> {
               ),
             ),
 
-            // Bottom CTA Button
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
               child: SizedBox(
