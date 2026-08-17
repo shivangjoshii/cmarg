@@ -12,7 +12,7 @@ class AppLoader extends StatelessWidget {
     this.height = 100,
     this.width = double.infinity,
     this.borderRadius = 16,
-    this.margin,
+    this.margin, required Color color,
   });
 
   @override

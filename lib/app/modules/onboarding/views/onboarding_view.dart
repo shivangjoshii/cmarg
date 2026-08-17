@@ -36,7 +36,7 @@ class OnboardingView extends GetView<OnboardingController> {
                           duration: const Duration(milliseconds: 300),
                           margin: const EdgeInsets.only(right: 6),
                           height: 5,
-                          width: controller.currentPage.value == index ? 24 : 6,
+                          width: controller.currentPage.value == index ? 12 : 6,
                           decoration: BoxDecoration(
                             color: controller.currentPage.value == index
                                 ? Colors.white
@@ -115,78 +115,74 @@ class OnboardingView extends GetView<OnboardingController> {
 
   Widget _buildSlideContent(OnboardingSlide slide) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 35.0),
       child: Column(
         children: [
           const SizedBox(height: 12),
           Expanded(
             child: Column(
               children: [
-                // Top Row Cards
                 Expanded(
-                  flex: 5,
+                  flex: 6,
                   child: Row(
                     children: [
-                      // Card 1: Tilted Clean White Status Card
                       Expanded(
                         flex: 11,
-                        child: Transform.rotate(
-                          angle: -0.05, // Slight tilt towards left
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.12),
-                                  blurRadius: 16,
-                                  offset: const Offset(0, 8),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.12),
+                                blurRadius: 16,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 32,
+                                height: 32,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF5A2CEE),
+                                  shape: BoxShape.circle,
                                 ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF5A2CEE),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
+                                child: const Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                  size: 18,
                                 ),
-                                const Spacer(),
-                                Text(
-                                  slide.card1Title,
-                                  style: const TextStyle(
-                                    color: Color(0xFF0F172A),
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                  ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                slide.card1Title,
+                                style: const TextStyle(
+                                  color: Color(0xFF0F172A),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  slide.card1Subtitle,
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.65),
-                                    fontSize: 11.5,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.3,
-                                  ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                slide.card1Subtitle,
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.65),
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.3,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
+
                       const SizedBox(width: 12),
-                       Expanded(
+                      Expanded(
                         flex: 10,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(24),
@@ -279,12 +275,10 @@ class OnboardingView extends GetView<OnboardingController> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                // Bottom Row Cards
                 Expanded(
                   flex: 6,
                   child: Row(
                     children: [
-                      // Card 3: Glossy Glass Stats Counter Card
                       Expanded(
                         flex: 8,
                         child: ClipRRect(
@@ -451,7 +445,7 @@ class OnboardingView extends GetView<OnboardingController> {
 
           // Title
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
             child: Text(
               slide.title,
               textAlign: TextAlign.center,

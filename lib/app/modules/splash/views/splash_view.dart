@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import '../controllers/splash_controller.dart';
+import '../../../theme/app_colors.dart';
 
 class SplashView extends GetView<SplashController> {
   const SplashView({super.key});
@@ -9,48 +10,43 @@ class SplashView extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
+      backgroundColor: AppColors.primary,
       body: Stack(
         alignment: Alignment.center,
         children: [
           Positioned(
-            top: -100,
-            right: -100,
+            top: -60,
+            right: -60,
             child:
                 Container(
-                      width: 320,
-                      height: 320,
+                      width: 280,
+                      height: 280,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: const Color(0xFF6366F1).withOpacity(0.18),
+                        color: Colors.white.withOpacity(0.08),
                       ),
                     )
                     .animate(onPlay: (c) => c.repeat(reverse: true))
                     .scale(
                       begin: const Offset(0.8, 0.8),
-                      end: const Offset(1.2, 1.2),
-                      duration: 2500.ms,
+                      end: const Offset(1.25, 1.25),
+                      duration: 2200.ms,
                     ),
           ),
-
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                      width: 100,
-                      height: 100,
+                      width: 96,
+                      height: 96,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.08),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(28),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.15),
-                          width: 1.5,
-                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF6366F1).withOpacity(0.35),
-                            blurRadius: 30,
+                            color: Colors.black.withOpacity(0.18),
+                            blurRadius: 28,
                             offset: const Offset(0, 10),
                           ),
                         ],
@@ -58,42 +54,42 @@ class SplashView extends GetView<SplashController> {
                       child: const Center(
                         child: Icon(
                           Icons.school_rounded,
-                          size: 52,
-                          color: Color(0xFFE2B659),
+                          size: 50,
+                          color: AppColors.primary,
                         ),
                       ),
                     )
                     .animate()
-                    .scale(duration: 800.ms, curve: Curves.easeOutBack)
+                    .scale(duration: 700.ms, curve: Curves.easeOutBack)
                     .shimmer(
-                      delay: 600.ms,
-                      duration: 1200.ms,
-                      color: Colors.white24,
+                      delay: 500.ms,
+                      duration: 1000.ms,
+                      color: AppColors.accent.withOpacity(0.4),
                     ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 28),
 
                 RichText(
                       text: const TextSpan(
                         text: "Career",
                         style: TextStyle(
                           fontFamily: 'Inter',
-                          fontSize: 32,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 34,
+                          fontWeight: FontWeight.w900,
                           color: Colors.white,
-                          letterSpacing: -0.5,
+                          letterSpacing: -0.8,
                         ),
                         children: [
                           TextSpan(
                             text: "Marg",
-                            style: TextStyle(color: Color(0xFFE2B659)),
+                            style: TextStyle(color: AppColors.accent),
                           ),
                         ],
                       ),
                     )
                     .animate()
-                    .fadeIn(delay: 300.ms, duration: 600.ms)
-                    .moveY(begin: 15, end: 0, curve: Curves.easeOutCubic),
+                    .fadeIn(delay: 250.ms, duration: 500.ms)
+                    .moveY(begin: 12, end: 0, curve: Curves.easeOutCubic),
 
                 const SizedBox(height: 10),
 
@@ -103,20 +99,21 @@ class SplashView extends GetView<SplashController> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.06),
+                    color: Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                    border: Border.all(color: Colors.white.withOpacity(0.2)),
                   ),
                   child: const Text(
                     "AI-POWERED NEET & MBBS ADMISSION",
                     style: TextStyle(
-                      color: Color(0xFF94A3B8),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.2,
+                      fontFamily: 'Inter',
+                      color: Colors.white,
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.1,
                     ),
                   ),
-                ).animate().fadeIn(delay: 500.ms, duration: 600.ms),
+                ).animate().fadeIn(delay: 450.ms, duration: 500.ms),
               ],
             ),
           ),
