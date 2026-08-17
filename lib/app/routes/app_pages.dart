@@ -1,3 +1,7 @@
+import 'package:cmarg/app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:cmarg/app/modules/onboarding/views/onboarding_view.dart';
+import 'package:cmarg/app/modules/splash/bindings/splash_binding.dart';
+import 'package:cmarg/app/modules/splash/views/splash_view.dart';
 import 'package:get/get.dart';
 import 'app_routes.dart';
 
