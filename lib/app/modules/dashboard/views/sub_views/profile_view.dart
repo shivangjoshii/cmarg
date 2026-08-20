@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../controllers/dashboard_controller.dart';
 import '../../widgets/neet_predictor_bottom_sheet.dart';
+import '../../../profile/views/profile_setup_view.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../theme/app_colors.dart';
 import '../../../../../core/utils/app_toast.dart';
@@ -19,446 +20,147 @@ class ProfileView extends GetView<DashboardController> {
       backgroundColor: isDark
           ? AppColors.darkBackground
           : AppColors.lightBackground,
-      body: SafeArea(
-        bottom: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top Header Bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Applicant Profile",
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  Container(
-                    height: 38,
-                    width: 38,
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkCard : Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isDark
-                            ? AppColors.darkBorder
-                            : AppColors.lightBorder,
-                        width: 1.2,
-                      ),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(Icons.settings_outlined, size: 18),
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
-                      padding: EdgeInsets.zero,
-                      onPressed: () =>
-                          _showSettingsBottomSheet(context, isDark),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // 1. Candidate Hero Identity Card
-              _buildCandidateHeroCard(context, isDark),
-              const SizedBox(height: 16),
-
-              // 2. Quick Activity Stats Matrix
-              _buildActivityStatsRow(isDark),
-              const SizedBox(height: 20),
-
-              // 3. Active Membership Card (With Direct Upgrade CTA)
-              _buildMembershipCard(isDark),
-              const SizedBox(height: 22),
-
-              // 4. Academic & Counselling Matrix
-              _buildSectionHeader("Counselling & Scores", isDark),
-              const SizedBox(height: 10),
-              _buildMenuCard(
-                isDark: isDark,
-                children: [
-                  _buildMenuItem(
-                    icon: Icons.speed_rounded,
-                    title: "NEET Scorecard & Rank",
-                    subtitle: "AIR #54,120 • 600/720 Verified",
-                    iconColor: AppColors.primary,
-                    onTap: () {
-                      Get.bottomSheet(
-                        const NeetPredictorBottomSheet(),
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                      );
-                    },
-                    isDark: isDark,
-                  ),
-                  _buildDivider(isDark),
-                  _buildMenuItem(
-                    icon: Icons.school_outlined,
-                    title: "Shortlisted Medical Colleges",
-                    subtitle: "3 Colleges saved for choice filling",
-                    iconColor: const Color(0xFF0284C7),
-                    onTap: () {
-                      controller.changeTab(1); // Switch to Colleges tab
-                    },
-                    isDark: isDark,
-                  ),
-                  _buildDivider(isDark),
-                  _buildMenuItem(
-                    icon: Icons.support_agent_rounded,
-                    title: "1-on-1 Doctor Mentor Bookings",
-                    subtitle: "Upcoming slot: Tomorrow, 4:00 PM",
-                    iconColor: const Color(0xFF10B981),
-                    onTap: () {
-                      controller.changeTab(2); // Switch to Counseling tab
-                    },
-                    isDark: isDark,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 22),
-
-              // 5. Helpdesk, Documents & Legal
-              _buildSectionHeader("Support & Preferences", isDark),
-              const SizedBox(height: 10),
-              _buildMenuCard(
-                isDark: isDark,
-                children: [
-                  _buildMenuItem(
-                    icon: Icons.chat_outlined,
-                    title: "WhatsApp Admission Desk",
-                    subtitle: "+91 8448443305 (24×7 Active)",
-                    iconColor: const Color(0xFF25D366),
-                    onTap: () {
-                      AppToast.info(
-                        "Support",
-                        "Connecting you to official WhatsApp admission cell.",
-                      );
-                    },
-                    isDark: isDark,
-                  ),
-                  _buildDivider(isDark),
-                  _buildMenuItem(
-                    icon: Icons.description_outlined,
-                    title: "Terms & Privacy Policy",
-                    subtitle: "CareerMarg consultancy norms",
-                    iconColor: AppColors.lightTextSecondary,
-                    onTap: () {
-                      AppToast.info("CareerMarg", "Opening terms of service.");
-                    },
-                    isDark: isDark,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // 6. Sign Out Action Button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.error,
-                    side: BorderSide(
-                      color: AppColors.error.withOpacity(0.35),
-                      width: 1.2,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  icon: const Icon(Icons.logout_rounded, size: 18),
-                  label: const Text(
-                    "Sign Out",
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  onPressed: () => _showLogoutConfirmation(context, isDark),
-                ),
-              ),
-
-              const SizedBox(
-                height: 110,
-              ), // Bottom Buffer for Floating Glass Dock
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCandidateHeroCard(BuildContext context, bool isDark) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isDark
-              ? [const Color(0xFF1E1B4B), const Color(0xFF111827)]
-              : [const Color(0xFF5A2CEE), const Color(0xFF4318B4)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.28),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              // Avatar Halo
-              Stack(
-                children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withOpacity(0.18),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.4),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.person_rounded,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(2.5),
-                      decoration: const BoxDecoration(
-                        color: AppColors.success,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.check,
-                        size: 10,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: const [
-                        Flexible(
-                          child: Text(
-                            "Pawan Kumar",
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 17.5,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white,
-                              letterSpacing: -0.3,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        SizedBox(width: 6),
-                        Icon(
-                          Icons.verified_rounded,
-                          color: AppColors.accent,
-                          size: 16,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      "+91 09279812411 • Delhi State",
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 12,
-                        color: Colors.white.withOpacity(0.8),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  AppToast.info(
-                    "Edit Profile",
-                    "Profile updating form will open.",
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.18),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.edit_outlined,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // Inline Verified Tag Row
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: const [
-                    Icon(
-                      Icons.badge_outlined,
-                      color: AppColors.accent,
-                      size: 15,
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      "Target: NEET UG 2026",
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.accent,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: const Text(
-                    "AIQ ACTIVE",
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 9.5,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.darkBackground,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActivityStatsRow(bool isDark) {
-    return Row(
-      children: [
-        _buildStatCard(
-          "3",
-          "Shortlisted",
-          Icons.bookmark_added_outlined,
-          const Color(0xFF0284C7),
-          isDark,
-        ),
-        const SizedBox(width: 10),
-        _buildStatCard(
-          "600",
-          "NEET Score",
-          Icons.speed_rounded,
-          AppColors.primary,
-          isDark,
-        ),
-        const SizedBox(width: 10),
-        _buildStatCard(
-          "1 Active",
-          "Doctor Slot",
-          Icons.event_available_outlined,
-          const Color(0xFF10B981),
-          isDark,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard(
-    String val,
-    String label,
-    IconData icon,
-    Color color,
-    bool isDark,
-  ) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.darkCard : Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-            width: 1.2,
-          ),
-        ),
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            Icon(icon, color: color, size: 18),
-            const SizedBox(height: 6),
-            Text(
-              val,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
-                fontWeight: FontWeight.w900,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
+            // 1. Signature Curvy Header with Integrated Hero Card
+            _buildCurvedHeader(context, isDark),
+
+            // 2. Main Content Surface
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 18),
+
+                  // Admission & Counselling Section
+                  _buildSectionTitle("Admission & Counselling", isDark),
+                  const SizedBox(height: 10),
+                  _buildUnifiedCard(
+                    isDark: isDark,
+                    items: [
+                      _MinimalRowItem(
+                        icon: Icons.edit_note_rounded,
+                        title: "Student Profile Setup",
+                        trailingText: "85% Done",
+                        onTap: () => Get.to(
+                          () => const ProfileSetupView(),
+                          transition: Transition.cupertino,
+                        ),
+                      ),
+                      _MinimalRowItem(
+                        icon: Icons.speed_rounded,
+                        title: "NEET Scorecard & Rank",
+                        trailingText: "AIR #54,120",
+                        onTap: () {
+                          Get.bottomSheet(
+                            const NeetPredictorBottomSheet(),
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                          );
+                        },
+                      ),
+                      _MinimalRowItem(
+                        icon: Icons.apartment_rounded,
+                        title: "Shortlisted Medical Colleges",
+                        trailingText: "3 Saved",
+                        onTap: () => controller.changeTab(1),
+                      ),
+                      _MinimalRowItem(
+                        icon: Icons.support_agent_rounded,
+                        title: "Doctor Mentor Consultation",
+                        trailingText: "1 Active",
+                        onTap: () => controller.changeTab(2),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  // Documents & Subscriptions Section
+                  _buildSectionTitle("Documents & Orders", isDark),
+                  const SizedBox(height: 10),
+                  _buildUnifiedCard(
+                    isDark: isDark,
+                    items: [
+                      _MinimalRowItem(
+                        icon: Icons.folder_outlined,
+                        title: "Verification Vault",
+                        trailingText: "4 Files",
+                        onTap: () =>
+                            AppToast.info("Vault", "Document vault opened."),
+                      ),
+                      _MinimalRowItem(
+                        icon: Icons.workspace_premium_outlined,
+                        title: "Membership & Invoices",
+                        trailingText: "Essential Pack",
+                        onTap: () => Get.toNamed(Routes.PLANS),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 22),
+
+                  // Support & Settings Section
+                  _buildSectionTitle("General & Support", isDark),
+                  const SizedBox(height: 10),
+                  _buildUnifiedCard(
+                    isDark: isDark,
+                    items: [
+                      _MinimalRowItem(
+                        icon: Icons.chat_bubble_outline_rounded,
+                        title: "Admission Helpdesk",
+                        trailingText: "24×7 Active",
+                        onTap: () => AppToast.info(
+                          "Support",
+                          "Connecting to counsellor desk...",
+                        ),
+                      ),
+                      _MinimalRowItem(
+                        icon: Icons.shield_outlined,
+                        title: "Terms & Privacy Policy",
+                        onTap: () => AppToast.info(
+                          "CareerMarg",
+                          "Opening terms of service.",
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Sign Out Action
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.error,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          side: BorderSide(
+                            color: isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder,
+                          ),
+                        ),
+                      ),
+                      icon: const Icon(Icons.logout_rounded, size: 17),
+                      label: const Text(
+                        "Sign Out",
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      onPressed: () => _showLogoutConfirmation(context, isDark),
+                    ),
+                  ),
+
+                  const SizedBox(height: 120),
+                ],
               ),
             ),
           ],
@@ -467,90 +169,207 @@ class ProfileView extends GetView<DashboardController> {
     );
   }
 
-  Widget _buildMembershipCard(bool isDark) {
+  // 1. Signature Curvy Header
+  Widget _buildCurvedHeader(BuildContext context, bool isDark) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF161C2E) : const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.primary.withOpacity(0.3),
-          width: 1.2,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.12),
-              shape: BoxShape.circle,
+        color: isDark ? const Color(0xFF161B2E) : const Color(0xFF5A2CEE),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+        boxShadow: [
+          BoxShadow(
+            color: (isDark ? Colors.black : AppColors.primary).withOpacity(
+              0.18,
             ),
-            child: const Icon(
-              Icons.workspace_premium_rounded,
-              color: AppColors.primary,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Essential Guidance Pack",
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  "Unlimited AI Prediction & Cutoff alerts",
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 11,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.lightTextSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: () => Get.toNamed(Routes.PLANS),
-            child: const Text(
-              "Upgrade",
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 11.5,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header Actions Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Profile",
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: -0.4,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => _showSettingsBottomSheet(context, isDark),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.settings_outlined,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Student Identity Overview
+              Row(
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.16),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.person_rounded,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Pawan Kumar",
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          "NEET UG 2026 • Delhi Domicile",
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 12,
+                            color: Colors.white.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Get.to(
+                      () => const ProfileSetupView(),
+                      transition: Transition.cupertino,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                        ),
+                      ),
+                      child: const Text(
+                        "Edit",
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 20),
+
+              // Score Matrix Strip
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.18),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildHeaderStat("SCORE", "600 / 720"),
+                    Container(height: 20, width: 1, color: Colors.white24),
+                    _buildHeaderStat("AIR PREDICTED", "#54,120"),
+                    Container(height: 20, width: 1, color: Colors.white24),
+                    _buildHeaderStat("PERCENTILE", "97.45%"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildSectionHeader(String title, bool isDark) {
+  Widget _buildHeaderStat(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 9,
+            fontWeight: FontWeight.w600,
+            color: Colors.white60,
+            letterSpacing: 0.4,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title, bool isDark) {
     return Text(
       title,
       style: TextStyle(
         fontFamily: 'Inter',
-        fontSize: 13.5,
-        fontWeight: FontWeight.w800,
+        fontSize: 12.5,
+        fontWeight: FontWeight.w700,
         color: isDark
             ? AppColors.darkTextSecondary
             : AppColors.lightTextSecondary,
@@ -559,8 +378,9 @@ class ProfileView extends GetView<DashboardController> {
     );
   }
 
-  Widget _buildMenuCard({
-    required List<Widget> children,
+  // Unified Minimalist Card Group
+  Widget _buildUnifiedCard({
+    required List<_MinimalRowItem> items,
     required bool isDark,
   }) {
     return Container(
@@ -572,69 +392,87 @@ class ProfileView extends GetView<DashboardController> {
           width: 1.2,
         ),
       ),
-      child: Column(children: children),
-    );
-  }
+      child: Column(
+        children: items.asMap().entries.map((entry) {
+          final int index = entry.key;
+          final _MinimalRowItem item = entry.value;
+          final bool isLast = index == items.length - 1;
 
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color iconColor,
-    required VoidCallback onTap,
-    required bool isDark,
-  }) {
-    return ListTile(
-      onTap: () {
-        HapticFeedback.lightImpact();
-        onTap();
-      },
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: iconColor.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Icon(icon, color: iconColor, size: 18),
+          return Column(
+            children: [
+              InkWell(
+                borderRadius: BorderRadius.vertical(
+                  top: index == 0 ? const Radius.circular(20) : Radius.zero,
+                  bottom: isLast ? const Radius.circular(20) : Radius.zero,
+                ),
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  item.onTap();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        item.icon,
+                        size: 20,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : const Color(0xFF334155),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Text(
+                          item.title,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
+                        ),
+                      ),
+                      if (item.trailingText != null) ...[
+                        Text(
+                          item.trailingText!,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                      ],
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 18,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (!isLast)
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                  indent: 50,
+                ),
+            ],
+          );
+        }).toList(),
       ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 13.5,
-          fontWeight: FontWeight.w700,
-          color: isDark
-              ? AppColors.darkTextPrimary
-              : AppColors.lightTextPrimary,
-        ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 11,
-          color: isDark
-              ? AppColors.darkTextSecondary
-              : AppColors.lightTextSecondary,
-        ),
-      ),
-      trailing: Icon(
-        Icons.arrow_forward_ios_rounded,
-        size: 13,
-        color: isDark
-            ? AppColors.darkTextSecondary
-            : AppColors.lightTextSecondary,
-      ),
-    );
-  }
-
-  Widget _buildDivider(bool isDark) {
-    return Divider(
-      height: 1,
-      thickness: 1,
-      color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-      indent: 54,
     );
   }
 
@@ -653,15 +491,15 @@ class ProfileView extends GetView<DashboardController> {
           children: [
             Container(
               height: 4,
-              width: 40,
+              width: 36,
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.35),
+                color: Colors.grey.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
             const SizedBox(height: 18),
             const Text(
-              "Settings & Preferences",
+              "Preferences",
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 16,
@@ -670,30 +508,10 @@ class ProfileView extends GetView<DashboardController> {
             ),
             const SizedBox(height: 16),
             ListTile(
-              leading: const Icon(
-                Icons.dark_mode_outlined,
-                color: AppColors.primary,
-              ),
+              leading: const Icon(Icons.notifications_active_outlined),
               title: const Text(
-                "Theme Mode",
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
-              ),
-              trailing: Text(
-                isDark ? "Dark Theme" : "Light Theme",
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.notifications_active_outlined,
-                color: AppColors.primary,
-              ),
-              title: const Text(
-                "Push Alerts",
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                "Counselling Deadline Alerts",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5),
               ),
               trailing: CupertinoSwitch(
                 value: true,
@@ -712,32 +530,19 @@ class ProfileView extends GetView<DashboardController> {
       Center(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 28),
-          padding: const EdgeInsets.all(22),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkSurface : Colors.white,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.error.withOpacity(0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.logout_rounded,
-                  color: AppColors.error,
-                  size: 28,
-                ),
-              ),
-              const SizedBox(height: 14),
               Text(
                 "Sign Out",
                 style: TextStyle(
                   fontFamily: 'Inter',
-                  fontSize: 18,
+                  fontSize: 17,
                   fontWeight: FontWeight.w800,
                   color: isDark
                       ? AppColors.darkTextPrimary
@@ -746,7 +551,7 @@ class ProfileView extends GetView<DashboardController> {
               ),
               const SizedBox(height: 6),
               Text(
-                "Are you sure you want to log out of CareerMarg?",
+                "Are you sure you want to sign out of CareerMarg?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Inter',
@@ -769,7 +574,7 @@ class ProfileView extends GetView<DashboardController> {
                       onPressed: () => Get.back(),
                       child: const Text(
                         "Cancel",
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                        style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -789,8 +594,8 @@ class ProfileView extends GetView<DashboardController> {
                         controller.logout();
                       },
                       child: const Text(
-                        "Logout",
-                        style: TextStyle(fontWeight: FontWeight.w800),
+                        "Sign Out",
+                        style: TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
@@ -802,4 +607,18 @@ class ProfileView extends GetView<DashboardController> {
       ),
     );
   }
+}
+
+class _MinimalRowItem {
+  final IconData icon;
+  final String title;
+  final String? trailingText;
+  final VoidCallback onTap;
+
+  _MinimalRowItem({
+    required this.icon,
+    required this.title,
+    this.trailingText,
+    required this.onTap,
+  });
 }
